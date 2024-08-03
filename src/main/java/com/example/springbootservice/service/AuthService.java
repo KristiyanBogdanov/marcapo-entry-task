@@ -38,7 +38,6 @@ public class AuthService {
 
         user.setPassword(hashPassword(user.getPassword()));
         userRepository.save(user);
-        cacheStorage.add(user.getId(), user.getPermissions());
 
         return generateTokens(user.getId());
     }
@@ -54,6 +53,7 @@ public class AuthService {
         return generateTokens(user.getId());
     }
 
+    // TODO: fix refresh token logic, because now I can use the refresh token even as access token.
     public AuthResponse refreshToken(String userId) {
         return generateTokens(userId);
     }

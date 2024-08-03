@@ -41,7 +41,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             String userId = jwtUtil.extractUserId(jwt);
 
-            if (cacheStorage.contains(userId) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (!cacheStorage.contains(userId)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("User not signed in");
+                return;
+            }
+
+            // TODO: check this condition
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 List<Permission> permissions = cacheStorage.get(userId);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
