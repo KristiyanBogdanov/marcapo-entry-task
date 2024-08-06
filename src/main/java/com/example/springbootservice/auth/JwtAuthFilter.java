@@ -1,6 +1,7 @@
 package com.example.springbootservice.auth;
 
 import com.example.springbootservice.model.user.Permission;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -39,6 +40,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         try {
+            Claims claims = jwtUtil.extractAllClaims(jwt);
+            String tokenType = claims.get("token_type", String.class);
+
+            if (!isValidTokenForRequest(request.getRequestURI(), tokenType)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid token type");
+                return;
+            }
+
             String userId = jwtUtil.extractUserId(jwt);
 
             if (!cacheStorage.contains(userId)) {
@@ -71,6 +81,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isValidTokenForRequest(String uri, String tokenType) {
+        boolean isRefreshEndpoint = uri.contains("auth/refresh");
+        boolean isAccessToken = "access".equals(tokenType);
+        boolean isRefreshToken = "refresh".equals(tokenType);
+
+        return (isRefreshEndpoint && isRefreshToken) || (!isRefreshEndpoint && isAccessToken);
     }
 
     private String extractJwtFromRequest(HttpServletRequest request) {

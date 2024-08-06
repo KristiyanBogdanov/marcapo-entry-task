@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -23,11 +24,11 @@ public class JwtUtil {
     private long refreshTokenExpiration;
 
     public String generateAccessToken(String userId) {
-        return generateToken(userId, accessTokenExpiration);
+        return generateToken(userId, accessTokenExpiration, Map.of("token_type", "access"));
     }
 
     public String generateRefreshToken(String userId) {
-        return generateToken(userId, refreshTokenExpiration);
+        return generateToken(userId, refreshTokenExpiration, Map.of("token_type", "refresh"));
     }
 
     private SecretKey getSignInKey() {
@@ -35,11 +36,12 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String generateToken(String userId, long expiration) {
+    private String generateToken(String userId, long expiration, Map<String, Object> claims) {
         Date now = new Date();
         Date tokenExpiration = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
+                .claims(claims)
                 .subject(userId)
                 .issuedAt(now)
                 .expiration(tokenExpiration)
@@ -47,7 +49,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
                 .verifyWith(getSignInKey())
@@ -67,9 +69,5 @@ public class JwtUtil {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
-    }
-
-    public Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
     }
 }

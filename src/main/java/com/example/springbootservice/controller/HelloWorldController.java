@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 public class HelloWorldController {
-    @PreAuthorize("hasAuthority('READ_HELLO_WORLD')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).READ_HELLO_WORLD.name())")
     @GetMapping("/helloworld")
     public String helloWorld() {
         return "helloworld";

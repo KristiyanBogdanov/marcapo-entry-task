@@ -12,31 +12,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 @AllArgsConstructor
 public class ProductController {
     private final ProductService productService;
 
-    @PreAuthorize("hasAuthority('GENERATE_PRODUCTS')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).GENERATE_PRODUCTS.name())")
     @GetMapping("/generate")
     public ResponseEntity<Void> generateNProducts(@RequestParam("numberOfProducts") @Positive int numberOfProducts) {
         productService.generateNProducts(numberOfProducts);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAuthority('READ_PRODUCT')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).READ_PRODUCT.name())")
     @GetMapping("/{id}")
     public ResponseEntity<Product> getById(@PathVariable String id) {
         return ResponseEntity.ok(productService.findById(id));
     }
 
-    @PreAuthorize("hasAuthority('SEARCH_PRODUCTS_BY_NAME')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).SEARCH_PRODUCTS_BY_NAME.name())")
     @GetMapping("/search/name/{name}")
     public ResponseEntity<List<EsProduct>> searchByName(@PathVariable String name) {
         return ResponseEntity.ok(productService.searchByName(name));
     }
 
-    @PreAuthorize("hasAuthority('SEARCH_PRODUCTS_BY_PRICE')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).SEARCH_PRODUCTS_BY_PRICE.name())")
     @GetMapping("/search/price")
     public ResponseEntity<List<EsProduct>> searchByPrice(
             @RequestParam("startPrice") @Positive float startPrice,
@@ -45,7 +45,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.searchByPriceRange(startPrice, endPrice));
     }
 
-    @PreAuthorize("hasAuthority('SEARCH_PRODUCTS_BY_LAUNCH_DATE')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).SEARCH_PRODUCTS_BY_LAUNCH_DATE.name())")
     @GetMapping("/search/launch-date")
     public ResponseEntity<List<EsProduct>> searchByLaunchDate(
             @RequestParam("startDate") String startDate,
@@ -54,7 +54,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.searchByLaunchDateRange(startDate, endDate));
     }
 
-    @PreAuthorize("hasAuthority('SEARCH_PRODUCTS_BY_COORDINATES')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).SEARCH_PRODUCTS_BY_COORDINATES.name())")
     @GetMapping("/search/within")
     public ResponseEntity<List<EsProduct>> searchWithin(
             @RequestParam("latitude") double latitude,

@@ -10,24 +10,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PreAuthorize("hasAuthority('READ_USER')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).READ_USER.name())")
     @GetMapping("/{id}")
     public ResponseEntity<User> getById(@PathVariable String id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    @PreAuthorize("hasAuthority('UPDATE_USER')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).UPDATE_USER.name())")
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUserInfo(@PathVariable String id, @Valid @RequestBody UserInfo userInfo) {
         return ResponseEntity.ok(userService.updateUserInfo(id, userInfo));
     }
 
-    @PreAuthorize("hasAuthority('DELETE_USER')")
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).DELETE_USER.name())")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable String id) {
         userService.deleteById(id);
