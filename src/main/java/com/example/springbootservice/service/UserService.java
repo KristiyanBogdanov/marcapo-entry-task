@@ -2,8 +2,8 @@ package com.example.springbootservice.service;
 
 import com.example.springbootservice.auth.CacheStorage;
 import com.example.springbootservice.exception.EntityNotFoundException;
-import com.example.springbootservice.model.User;
-import com.example.springbootservice.model.UserInfo;
+import com.example.springbootservice.model.user.User;
+import com.example.springbootservice.model.user.UserInfo;
 import com.example.springbootservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -11,3 +11,12 @@ services:
     image: 'redis:latest'
     ports:
       - '6379'
+  elasticsearch:
+    image: 'elasticsearch:8.11.3'
+    environment:
+      - discovery.type=single-node
+      - cluster.name=elasticsearch
+      - xpack.security.enabled=false
+    ports:
+      - '9200'
+      - '9300'

@@ -1,6 +1,6 @@
 package com.example.springbootservice.config;
 
-import com.example.springbootservice.model.Permission;
+import com.example.springbootservice.model.user.Permission;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

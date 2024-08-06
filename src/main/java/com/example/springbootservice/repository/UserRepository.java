@@ -1,6 +1,6 @@
 package com.example.springbootservice.repository;
 
-import com.example.springbootservice.model.User;
+import com.example.springbootservice.model.user.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.example.springbootservice.auth;
 
-import com.example.springbootservice.model.Permission;
+import com.example.springbootservice.model.user.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

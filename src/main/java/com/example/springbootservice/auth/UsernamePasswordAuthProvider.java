@@ -1,6 +1,6 @@
 //package com.example.springbootservice.config.jwt;
 //
-//import com.example.springbootservice.model.User;
+//import com.example.springbootservice.model.user.User;
 //import com.example.springbootservice.repository.UserRepository;
 //import lombok.AllArgsConstructor;
 //import org.springframework.security.authentication.AuthenticationProvider;

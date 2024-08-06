@@ -1,4 +1,4 @@
-package com.example.springbootservice.model;
+package com.example.springbootservice.model.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

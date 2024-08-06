@@ -6,7 +6,7 @@ import com.example.springbootservice.dto.AuthResponse;
 import com.example.springbootservice.dto.LoginRequest;
 import com.example.springbootservice.exception.EntityAlreadyExistsException;
 import com.example.springbootservice.exception.InvalidCredentialsException;
-import com.example.springbootservice.model.User;
+import com.example.springbootservice.model.user.User;
 import com.example.springbootservice.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

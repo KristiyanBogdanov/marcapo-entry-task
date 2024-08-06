@@ -1,6 +1,6 @@
 package com.example.springbootservice.auth;
 
-import com.example.springbootservice.model.Permission;
+import com.example.springbootservice.model.user.Permission;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;

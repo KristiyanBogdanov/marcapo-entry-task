@@ -2,7 +2,7 @@ package com.example.springbootservice.controller;
 
 import com.example.springbootservice.dto.AuthResponse;
 import com.example.springbootservice.dto.LoginRequest;
-import com.example.springbootservice.model.User;
+import com.example.springbootservice.model.user.User;
 import com.example.springbootservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
