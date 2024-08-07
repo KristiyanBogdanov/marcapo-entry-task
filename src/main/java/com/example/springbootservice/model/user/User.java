@@ -7,18 +7,21 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 @Data
 @Document(collection = "users")
+
 public class User {
     @Id
     private String id;
 
     @NotBlank
     @Size(min = 3, max = 20)
-    private String username; // accept that username is unique
+    @Indexed(unique = true)
+    private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank

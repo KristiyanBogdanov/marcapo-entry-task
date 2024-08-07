@@ -27,7 +27,7 @@ public class EsProduct {
     private GeoPoint coordinatesOfOrigin;
 
     public static EsProduct fromProduct(Product product) {
-        List<Double> coordinates = product.getCoordinatesOfOrigin().getPosition().getValues();
+        List<Double> coordinates = product.getCoordinatesOfOrigin().getCoordinates();
         return EsProduct.builder()
                 .mongoId(product.getId())
                 .name(product.getName())

@@ -1,14 +1,11 @@
 package com.example.springbootservice.service;
 
-import co.elastic.clients.elasticsearch._types.LatLonGeoLocation;
 import co.elastic.clients.elasticsearch._types.query_dsl.GeoDistanceQuery;
 import com.example.springbootservice.exception.EntityNotFoundException;
 import com.example.springbootservice.model.product.EsProduct;
 import com.example.springbootservice.model.product.Product;
 import com.example.springbootservice.repository.ProductElasticsearchRepository;
 import com.example.springbootservice.repository.ProductRepository;
-import com.mongodb.client.model.geojson.Point;
-import com.mongodb.client.model.geojson.Position;
 import lombok.AllArgsConstructor;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -16,6 +13,7 @@ import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,10 +45,10 @@ public class ProductService {
         return LocalDate.ofEpochDay(randomDay);
     }
 
-    private Point generateRandomCoordinates() {
+    private GeoJsonPoint generateRandomCoordinates() {
         double longitude = -180 + randomGenerator.nextFloat() * 360;
         double latitude = -90 + randomGenerator.nextDouble() * 180;
-        return new Point(new Position(longitude, latitude));
+        return new GeoJsonPoint(longitude, latitude);
     }
 
     private Product initProductWithRandomValues(int index) {
@@ -72,8 +70,8 @@ public class ProductService {
 
     @Transactional
     public void saveProduct(Product product) {
-        productRepository.save(product);
-        productElasticsearchRepository.save(EsProduct.fromProduct(product));
+        Product createdProduct = productRepository.save(product);
+        productElasticsearchRepository.save(EsProduct.fromProduct(createdProduct));
     }
 
     public Product findById(String id) {
@@ -93,7 +91,10 @@ public class ProductService {
     }
 
     public List<EsProduct> searchWithin(double latitude, double longitude, double distanceKm) {
-//        GeoDistanceQuery geoDistanceQuery = GeoDistanceQuery.of(g -> g
+        return productElasticsearchRepository.findByCoordinatesOfOriginWithin(latitude, longitude, distanceKm);
+
+//         Another way to implement the searchWithin method:
+//                GeoDistanceQuery geoDistanceQuery = GeoDistanceQuery.of(g -> g
 //                .field("coordinatesOfOrigin")
 //                .distance(distanceKm + "km")
 //                .location(l -> l.coords(List.of(longitude, latitude)))
@@ -107,7 +108,9 @@ public class ProductService {
 //        return searchHits.getSearchHits().stream()
 //                .map(SearchHit::getContent)
 //                .collect(Collectors.toList());
+    }
 
-        return productElasticsearchRepository.findByCoordinatesOfOriginWithin(latitude, longitude, distanceKm);
+    public List<EsProduct> searchByAllFields(String query) {
+        return productElasticsearchRepository.searchByAllFields(query);
     }
 }

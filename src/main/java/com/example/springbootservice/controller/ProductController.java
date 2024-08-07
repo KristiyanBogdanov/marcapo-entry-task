@@ -3,6 +3,7 @@ package com.example.springbootservice.controller;
 import com.example.springbootservice.model.product.EsProduct;
 import com.example.springbootservice.model.product.Product;
 import com.example.springbootservice.service.ProductService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,12 @@ public class ProductController {
         productService.generateNProducts(numberOfProducts);
         return ResponseEntity.noContent().build();
     }
+
+//    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).CREATE_PRODUCT.name())")
+//    @PostMapping
+//    public ResponseEntity<Product> create(@Valid @RequestBody Product product) {
+//        return ResponseEntity.ok(productService.save(product));
+//    }
 
     @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).READ_PRODUCT.name())")
     @GetMapping("/{id}")
@@ -62,5 +69,11 @@ public class ProductController {
             @RequestParam("distanceKm") @Positive double distanceKm
     ) {
         return ResponseEntity.ok(productService.searchWithin(latitude, longitude, distanceKm));
+    }
+
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).SEARCH_PRODUCTS_BY_ALL_FIELDS.name())")
+    @GetMapping("/search/general")
+    public ResponseEntity<List<EsProduct>> searchByAllFields(@RequestParam("query") String query) {
+        return ResponseEntity.ok(productService.searchByAllFields(query));
     }
 }

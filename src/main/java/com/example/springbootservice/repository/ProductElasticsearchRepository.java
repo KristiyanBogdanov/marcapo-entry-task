@@ -16,4 +16,7 @@ public interface ProductElasticsearchRepository extends ElasticsearchRepository<
 
     @Query("{\"bool\": {\"filter\": {\"geo_distance\": {\"distance\": \"?2km\", \"coordinatesOfOrigin\": {\"lat\": ?0, \"lon\": ?1}}}}}")
     List<EsProduct> findByCoordinatesOfOriginWithin(double latitude, double longitude, double distanceKm);
+
+    @Query("{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"*\"]} }")
+    List<EsProduct> searchByAllFields(String query);
 }
