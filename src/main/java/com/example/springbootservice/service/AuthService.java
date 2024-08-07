@@ -31,15 +31,31 @@ public class AuthService {
         return new AuthResponse(accessToken, refreshToken);
     }
 
+    /*
+        @Note: Another possible solution is to use two separate caches - one acting as a blacklist and the other as a whitelist.
+        When a user signs out, we add the user to the blacklist cache and remove the user from the whitelist cache.
+        When a user signs in, we check if the user is in the blacklist cache. If the user is in the blacklist cache, we reject the request.
+        The idea of whitelisting is to store user permissions and reduce the number of database queries.
+    */
+    private AuthResponse getAuthResponse(User user) {
+        cacheStorage.add(user.getId(), user.getPermissions());
+        return generateTokens(user.getId());
+    }
+
+    /*
+        @Note: In order to create a more sustainable solution, better approach might be to use roles with permissions.
+        For example, we can have roles like "ADMIN", "USER", "GUEST" and assign permissions to these roles.
+        This way, the user will not be allowed to assign permissions directly, but only roles.
+    */
     public AuthResponse signUp(User user) {
         userRepository.findByUsername(user.getUsername()).ifPresent(u -> {
             throw new EntityAlreadyExistsException("Username is already taken");
         });
 
         user.setPassword(hashPassword(user.getPassword()));
-        userRepository.save(user);
+        User createdUser = userRepository.save(user);
 
-        return generateTokens(user.getId());
+        return getAuthResponse(createdUser);
     }
 
     public AuthResponse signIn(LoginRequest loginData) {
@@ -48,15 +64,7 @@ public class AuthService {
                 .filter(entity -> passwordEncoder.matches(loginData.getPassword(), entity.getPassword()))
                 .orElseThrow(InvalidCredentialsException::new);
 
-        /*
-            @Note: Another possible solution is to use two separate caches - one acting as a blacklist and the other as a whitelist.
-            When a user signs out, we add the user to the blacklist cache and remove the user from the whitelist cache.
-            When a user signs in, we check if the user is in the blacklist cache. If the user is in the blacklist cache, we reject the request.
-            The idea of whitelisting is to store user permissions and reduce the number of database queries.
-        */
-        cacheStorage.add(user.getId(), user.getPermissions());
-
-        return generateTokens(user.getId());
+        return getAuthResponse(user);
     }
 
     public AuthResponse refreshToken(String userId) {

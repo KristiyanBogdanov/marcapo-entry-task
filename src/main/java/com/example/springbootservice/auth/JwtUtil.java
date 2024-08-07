@@ -50,7 +50,7 @@ public class JwtUtil {
     }
 
     /*
-        @Note: this method also throws an exception if the token is expired or has an invalid signature.
+        @Note: This method also throws an exception if the token is expired or has an invalid signature.
     */
     public Claims extractAllClaims(String token) {
         return Jwts

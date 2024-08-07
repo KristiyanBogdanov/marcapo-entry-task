@@ -112,21 +112,24 @@ public class ProductService {
     public List<EsProduct> searchWithin(double latitude, double longitude, double distanceKm) {
         return productElasticsearchRepository.findByCoordinatesOfOriginWithin(latitude, longitude, distanceKm);
 
-//         Another way to implement the searchWithin method:
-//                GeoDistanceQuery geoDistanceQuery = GeoDistanceQuery.of(g -> g
-//                .field("coordinatesOfOrigin")
-//                .distance(distanceKm + "km")
-//                .location(l -> l.coords(List.of(longitude, latitude)))
-//        );
-//
-//        NativeQuery query = new NativeQueryBuilder()
-//                .withQuery(Query.of(q -> q.geoDistance(geoDistanceQuery)))
-//                .build();
-//
-//        SearchHits<EsProduct> searchHits = operations.search(query, EsProduct.class);
-//        return searchHits.getSearchHits().stream()
-//                .map(SearchHit::getContent)
-//                .collect(Collectors.toList());
+        /*
+            @Note: Below is the alternative approach to achieve the same result
+
+            GeoDistanceQuery geoDistanceQuery = GeoDistanceQuery.of(g -> g
+                    .field("coordinatesOfOrigin")
+                    .distance(distanceKm + "km")
+                    .location(l -> l.coords(List.of(longitude, latitude)))
+            );
+
+            NativeQuery query = new NativeQueryBuilder()
+                    .withQuery(Query.of(q -> q.geoDistance(geoDistanceQuery)))
+                    .build();
+
+            SearchHits<EsProduct> searchHits = operations.search(query, EsProduct.class);
+            return searchHits.getSearchHits().stream()
+                    .map(SearchHit::getContent)
+                    .collect(Collectors.toList());
+        */
     }
 
     public List<EsProduct> searchByAllFields(String query) {
