@@ -57,7 +57,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // TODO: check this condition
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
                 List<Permission> permissions = cacheStorage.get(userId);
 

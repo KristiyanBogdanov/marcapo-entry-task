@@ -48,12 +48,17 @@ public class AuthService {
                 .filter(entity -> passwordEncoder.matches(loginData.getPassword(), entity.getPassword()))
                 .orElseThrow(InvalidCredentialsException::new);
 
+        /*
+            @Note: Another possible solution is to use two separate caches - one acting as a blacklist and the other as a whitelist.
+            When a user signs out, we add the user to the blacklist cache and remove the user from the whitelist cache.
+            When a user signs in, we check if the user is in the blacklist cache. If the user is in the blacklist cache, we reject the request.
+            The idea of whitelisting is to store user permissions and reduce the number of database queries.
+        */
         cacheStorage.add(user.getId(), user.getPermissions());
 
         return generateTokens(user.getId());
     }
 
-    // TODO: fix refresh token logic, because now I can use the refresh token even as access token.
     public AuthResponse refreshToken(String userId) {
         return generateTokens(userId);
     }

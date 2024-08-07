@@ -49,6 +49,9 @@ public class JwtUtil {
                 .compact();
     }
 
+    /*
+        @Note: this method also throws an exception if the token is expired or has an invalid signature.
+    */
     public Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
@@ -65,9 +68,5 @@ public class JwtUtil {
 
     public String extractUserId(String token) {
         return extractClaim(token, Claims::getSubject);
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
     }
 }

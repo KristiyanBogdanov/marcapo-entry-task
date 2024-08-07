@@ -13,14 +13,13 @@ import java.util.List;
 
 @Data
 @Document(collection = "users")
-
 public class User {
     @Id
     private String id;
 
     @NotBlank
     @Size(min = 3, max = 20)
-    @Indexed(unique = true)
+    @Indexed(unique = true, name = "usernameIndex")
     private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

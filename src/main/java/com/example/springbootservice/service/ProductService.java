@@ -1,6 +1,7 @@
 package com.example.springbootservice.service;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.GeoDistanceQuery;
+import com.example.springbootservice.dto.CreateProductRequest;
 import com.example.springbootservice.exception.EntityNotFoundException;
 import com.example.springbootservice.model.product.EsProduct;
 import com.example.springbootservice.model.product.Product;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
@@ -60,18 +62,35 @@ public class ProductService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void generateNProducts(int numberOfProducts) {
-        for (int i = 0; i < numberOfProducts; i++) {
-            Product product = initProductWithRandomValues(i);
-            saveProduct(product);
-        }
+        List<Product> createdProducts = productRepository.saveAll(
+                IntStream.range(0, numberOfProducts)
+                        .mapToObj(this::initProductWithRandomValues)
+                        .collect(Collectors.toList())
+        );
+
+        productElasticsearchRepository.saveAll(
+                createdProducts.stream()
+                        .map(EsProduct::fromProduct)
+                        .collect(Collectors.toList())
+        );
     }
 
-    @Transactional
-    public void saveProduct(Product product) {
-        Product createdProduct = productRepository.save(product);
+    /*
+        @Note: Better approach to handle the transactional behavior of the create method is to use some kind of message queue (pub/sub protocol), like Kafka
+    */
+    @Transactional(rollbackFor = Exception.class)
+    public Product create(CreateProductRequest productData) {
+        Product createdProduct = productRepository.save(Product.builder()
+                .name(productData.getName())
+                .price(productData.getPrice())
+                .launchDate(productData.getLaunchDate())
+                .coordinatesOfOrigin(new GeoJsonPoint(productData.getLongitude(), productData.getLatitude()))
+                .build()
+        );
         productElasticsearchRepository.save(EsProduct.fromProduct(createdProduct));
+        return createdProduct;
     }
 
     public Product findById(String id) {

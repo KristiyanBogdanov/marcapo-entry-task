@@ -22,7 +22,7 @@ public class EsProduct {
     private String name;
     private float price;
 
-    @Field(type = FieldType.Date, format = DateFormat.date) // TODO: rework this
+    @Field(type = FieldType.Date, format = DateFormat.date)
     private LocalDate launchDate;
     private GeoPoint coordinatesOfOrigin;
 

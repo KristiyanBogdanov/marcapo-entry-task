@@ -1,8 +1,5 @@
 package com.example.springbootservice.model.product;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -19,13 +16,10 @@ public class Product {
     @Id
     private String id;
 
-    @NotBlank
-    @Size(min = 2, max = 60)
-    @Indexed
+    @Indexed(name = "nameIndex")
     private String name;
 
-    @Positive
-    @Indexed
+    @Indexed(name = "priceIndex")
     private float price;
 
     private LocalDate launchDate;

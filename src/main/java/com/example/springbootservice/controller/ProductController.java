@@ -1,5 +1,6 @@
 package com.example.springbootservice.controller;
 
+import com.example.springbootservice.dto.CreateProductRequest;
 import com.example.springbootservice.model.product.EsProduct;
 import com.example.springbootservice.model.product.Product;
 import com.example.springbootservice.service.ProductService;
@@ -25,11 +26,11 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).CREATE_PRODUCT.name())")
-//    @PostMapping
-//    public ResponseEntity<Product> create(@Valid @RequestBody Product product) {
-//        return ResponseEntity.ok(productService.save(product));
-//    }
+    @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).CREATE_PRODUCT.name())")
+    @PostMapping
+    public ResponseEntity<Product> create(@Valid @RequestBody CreateProductRequest productData) {
+        return ResponseEntity.ok(productService.create(productData));
+    }
 
     @PreAuthorize("hasAuthority(T(com.example.springbootservice.model.user.Permission).READ_PRODUCT.name())")
     @GetMapping("/{id}")
